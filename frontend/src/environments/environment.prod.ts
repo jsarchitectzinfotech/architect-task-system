@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://YOUR-APP.up.railway.app/api'
+  apiUrl: 'https://architect-task-system-production.up.railway.app/api'
 };
