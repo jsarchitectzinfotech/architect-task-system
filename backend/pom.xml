@@ -18,7 +18,7 @@
     <description>Task management system for architects</description>
 
     <properties>
-        <java.version>24</java.version>
+        <java.version>21</java.version>
         <jjwt.version>0.12.6</jjwt.version>
         <aws.sdk.version>2.26.27</aws.sdk.version>
         <springdoc.version>2.6.0</springdoc.version>
