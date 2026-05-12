@@ -1,0 +1,16 @@
+<div class="page-container">
+  <div class="page-header"><h1>Work Logs</h1></div>
+  <div *ngIf="loading"><mat-spinner style="margin:80px auto;display:block"></mat-spinner></div>
+  <div *ngIf="!loading">
+    <mat-expansion-panel *ngFor="let log of logs" style="margin-bottom:8px">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ log.logDate | date:'EEE, MMM d' }}</mat-panel-title>
+        <mat-panel-description>{{ log.task?.title }} · {{ log.hoursSpent ? log.hoursSpent + 'h' : '' }}</mat-panel-description>
+      </mat-expansion-panel-header>
+      <p><strong>Done:</strong> {{ log.description }}</p>
+      <p *ngIf="log.plannedForTomorrow"><strong>Tomorrow:</strong> {{ log.plannedForTomorrow }}</p>
+      <p *ngIf="log.blockers"><strong>Blockers:</strong> {{ log.blockers }}</p>
+    </mat-expansion-panel>
+    <p *ngIf="logs.length===0" class="empty">No work logs yet.</p>
+  </div>
+</div>

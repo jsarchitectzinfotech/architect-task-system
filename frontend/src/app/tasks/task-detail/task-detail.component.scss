@@ -1,0 +1,34 @@
+.page-container{padding:24px;max-width:1400px}
+.task-header{margin-bottom:24px}
+h1{font-size:24px;font-weight:600;color:#1a2332;margin:0 0 12px}
+.task-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:4px;font-size:13px;color:#546e7a}
+.meta-icon{font-size:16px;width:16px;height:16px}
+.task-body{display:grid;grid-template-columns:1fr 360px;gap:20px}
+.main-col,.side-col{display:flex;flex-direction:column;gap:16px}
+.section-card{border-radius:12px}
+.status-update-row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.full-field{width:100%;margin-bottom:12px;display:block}
+.log-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.log-panel{margin-bottom:8px}
+.comment{display:flex;gap:12px;margin-bottom:16px}
+.comment-avatar{width:36px;height:36px;border-radius:50%;background:#1976d2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+.comment-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.comment-header span{color:#90a4ae}
+.comment-body p{margin:0;font-size:14px}
+.comment-input{display:flex;align-items:center;gap:8px;border-top:1px solid #e0e0e0;padding-top:12px}
+.comment-field{flex:1;border:none;outline:none;font-size:14px;padding:8px 0;border-bottom:1px solid #e0e0e0}
+.upload-area{border:2px dashed #90caf9;border-radius:8px;padding:20px;text-align:center;cursor:pointer;color:#1976d2;transition:.2s}
+.upload-area:hover{background:#e3f2fd}
+.upload-area mat-icon{font-size:32px;width:32px;height:32px;display:block;margin:0 auto 8px}
+.artifact-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.artifact-item:last-child{border-bottom:none}
+.file-icon{color:#1976d2}
+.artifact-info{flex:1}
+.artifact-name{display:block;font-size:13px;font-weight:500}
+.artifact-meta{font-size:11px;color:#90a4ae}
+.history-item{display:flex;gap:12px;margin-bottom:12px}
+.history-dot{width:8px;height:8px;border-radius:50%;background:#1976d2;margin-top:6px;flex-shrink:0}
+.history-status{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.history-meta{font-size:12px;color:#90a4ae}
+.history-remarks{font-size:13px;color:#546e7a;margin-top:4px}

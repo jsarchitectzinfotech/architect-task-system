@@ -1,0 +1,29 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Projects</h1>
+    <button mat-raised-button color="primary" *ngIf="auth.isManager" (click)="openCreate()">
+      <mat-icon>add</mat-icon> New Project
+    </button>
+  </div>
+  <div *ngIf="loading"><mat-spinner style="margin:80px auto;display:block"></mat-spinner></div>
+  <div class="projects-grid" *ngIf="!loading">
+    <mat-card class="project-card" *ngFor="let p of projects" [routerLink]="['/projects', p.id]">
+      <mat-card-header>
+        <mat-card-title>{{ p.name }}</mat-card-title>
+        <mat-card-subtitle>{{ p.clientName }} <span *ngIf="p.projectCode">· {{ p.projectCode }}</span></mat-card-subtitle>
+        <div class="card-actions" *ngIf="auth.isManager">
+          <button mat-icon-button (click)="openEdit($event, p)" matTooltip="Edit project"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="delete($event, p)" matTooltip="Delete project"><mat-icon>delete</mat-icon></button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <app-status-badge [status]="p.status"></app-status-badge>
+        <p class="project-desc" *ngIf="p.description">{{ p.description }}</p>
+        <span *ngIf="p.location" class="project-loc">
+          <mat-icon style="font-size:14px;vertical-align:middle">location_on</mat-icon>{{ p.location }}
+        </span>
+      </mat-card-content>
+    </mat-card>
+    <p *ngIf="projects.length === 0" class="empty">No projects yet.</p>
+  </div>
+</div>

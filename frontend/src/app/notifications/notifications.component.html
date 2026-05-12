@@ -1,0 +1,18 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Notifications</h1>
+    <button mat-stroked-button (click)="markAllRead()">Mark all as read</button>
+  </div>
+  <div *ngIf="loading"><mat-spinner style="margin:80px auto;display:block"></mat-spinner></div>
+  <mat-card *ngIf="!loading">
+    <mat-list>
+      <mat-list-item *ngFor="let n of notifications" class="notif-item" [class.unread]="!n.read" (click)="markRead(n)">
+        <mat-icon matListItemIcon [color]="!n.read ? 'primary' : ''">notifications</mat-icon>
+        <div matListItemTitle>{{ n.title }}</div>
+        <div matListItemLine>{{ n.message }}</div>
+        <div matListItemLine class="notif-time">{{ n.createdAt | date:'short' }}</div>
+      </mat-list-item>
+    </mat-list>
+    <p *ngIf="notifications.length===0" class="empty">No notifications.</p>
+  </mat-card>
+</div>

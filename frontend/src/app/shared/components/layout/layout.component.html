@@ -1,0 +1,33 @@
+<div class="app-layout">
+  <nav class="sidenav">
+    <div class="sidenav-header">
+      <mat-icon class="logo-icon">domain</mat-icon>
+      <div><span class="brand-name">ArchTask</span><span class="brand-role">{{ auth.currentUser?.role }}</span></div>
+    </div>
+    <ul class="nav-list">
+      <li><a routerLink="/dashboard" routerLinkActive="active-link"><mat-icon>analytics</mat-icon><span>Dashboard</span></a></li>
+      <li><a routerLink="/projects" routerLinkActive="active-link"><mat-icon>architecture</mat-icon><span>Projects</span></a></li>
+      <li><a routerLink="/tasks" routerLinkActive="active-link"><mat-icon>assignment_ind</mat-icon><span>Tasks</span></a></li>
+      <li><a routerLink="/worklogs" routerLinkActive="active-link"><mat-icon>schedule</mat-icon><span>Work Logs</span></a></li>
+      <li><a routerLink="/artifacts" routerLinkActive="active-link"><mat-icon>file_download</mat-icon><span>Artifacts</span></a></li>
+      <li>
+        <a routerLink="/notifications" routerLinkActive="active-link">
+          <mat-icon [matBadge]="unreadCount > 0 ? unreadCount : null" matBadgeColor="warn">notifications_active</mat-icon>
+          <span>Notifications</span>
+        </a>
+      </li>
+      <li *ngIf="auth.isManager"><a routerLink="/admin" routerLinkActive="active-link"><mat-icon>group_add</mat-icon><span>Team</span></a></li>
+    </ul>
+    <div class="sidenav-footer">
+      <div class="user-avatar">{{ auth.currentUser?.name?.charAt(0) }}</div>
+      <div class="user-info">
+        <span class="user-name">{{ auth.currentUser?.name }}</span>
+        <span class="user-email">{{ auth.currentUser?.email }}</span>
+      </div>
+      <button mat-icon-button (click)="logout()" matTooltip="Logout"><mat-icon>logout</mat-icon></button>
+    </div>
+  </nav>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

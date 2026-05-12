@@ -1,0 +1,158 @@
+<div class="page-container" *ngIf="!loading && task; else loader">
+  <div class="task-header">
+    <div class="task-title-area">
+      <h1>{{ task.title }}</h1>
+      <div class="task-meta">
+        <app-status-badge [status]="task.status"></app-status-badge>
+        <app-status-badge [status]="task.priority"></app-status-badge>
+        <span class="meta-item"><mat-icon class="meta-icon">folder</mat-icon>{{ task.projectName }}</span>
+        <span class="meta-item" *ngIf="task.dueDate"><mat-icon class="meta-icon">event</mat-icon>{{ task.dueDate | date }}</span>
+        <span class="meta-item"><mat-icon class="meta-icon">person</mat-icon>{{ task.assignedTo?.name }}</span>
+      </div>
+    </div>
+    <div class="task-header-actions" *ngIf="auth.isManager">
+      <button mat-stroked-button (click)="editTask()"><mat-icon>edit</mat-icon> Edit</button>
+      <button mat-stroked-button color="warn" (click)="deleteTask()"><mat-icon>delete</mat-icon> Delete</button>
+    </div>
+  </div>
+
+  <div class="task-body">
+    <div class="main-col">
+      <mat-card class="section-card" *ngIf="task.description">
+        <mat-card-header><mat-card-title>Description</mat-card-title></mat-card-header>
+        <mat-card-content><p>{{ task.description }}</p></mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card">
+        <mat-card-header><mat-card-title>Update Status</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="status-update-row">
+            <mat-form-field appearance="outline" style="flex:1">
+              <mat-select [(ngModel)]="selectedStatus">
+                <mat-option *ngFor="let s of availableStatuses" [value]="s">{{ s | statusLabel }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex:2">
+              <mat-label>Remarks (optional)</mat-label>
+              <input matInput [(ngModel)]="statusRemarks">
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="updateStatus()" [disabled]="selectedStatus === task.status">Update</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card">
+        <mat-card-header><mat-card-title>Log Today's Work</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="logForm">
+            <mat-form-field appearance="outline" class="full-field">
+              <mat-label>What did you do today?</mat-label>
+              <textarea matInput formControlName="description" rows="3"></textarea>
+            </mat-form-field>
+            <div class="log-row">
+              <mat-form-field appearance="outline" style="flex:2">
+                <mat-label>Planned for tomorrow</mat-label>
+                <input matInput formControlName="plannedForTomorrow">
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="flex:2">
+                <mat-label>Blockers</mat-label>
+                <input matInput formControlName="blockers">
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="flex:1">
+                <mat-label>Hours</mat-label>
+                <input matInput type="number" formControlName="hoursSpent">
+              </mat-form-field>
+            </div>
+            <button mat-raised-button color="accent" (click)="submitLog()" [disabled]="logForm.invalid">Save Log</button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card" *ngIf="worklogs.length > 0">
+        <mat-card-header><mat-card-title>Work Log History ({{ worklogs.length }})</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <mat-expansion-panel *ngFor="let log of worklogs" class="log-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ log.logDate | date:'EEE, MMM d' }}</mat-panel-title>
+              <mat-panel-description>{{ log.user.name }} · {{ log.hoursSpent ? log.hoursSpent + 'h' : '' }}</mat-panel-description>
+            </mat-expansion-panel-header>
+            <p><strong>Done:</strong> {{ log.description }}</p>
+            <p *ngIf="log.plannedForTomorrow"><strong>Tomorrow:</strong> {{ log.plannedForTomorrow }}</p>
+            <p *ngIf="log.blockers"><strong>Blockers:</strong> {{ log.blockers }}</p>
+          </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card">
+        <mat-card-header><mat-card-title>Comments ({{ comments.length }})</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="comment" *ngFor="let c of comments">
+            <div class="comment-avatar">{{ c.author.name.charAt(0) }}</div>
+            <div class="comment-body">
+              <div class="comment-header"><strong>{{ c.author.name }}</strong><span>{{ c.createdAt | date:'short' }}</span></div>
+              <p>{{ c.content }}</p>
+            </div>
+          </div>
+          <div class="comment-input">
+            <input matInput placeholder="Write a comment..." [(ngModel)]="newComment" (keyup.enter)="addComment()" class="comment-field">
+            <button mat-icon-button color="primary" (click)="addComment()" [disabled]="!newComment.trim()"><mat-icon>send</mat-icon></button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="side-col">
+      <mat-card class="section-card">
+        <mat-card-header><mat-card-title>Upload Artifact</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="upload-area" (click)="fileInput.click()">
+            <mat-icon>cloud_upload</mat-icon>
+            <span>{{ selectedFile ? selectedFile.name : 'Click to select file' }}</span>
+          </div>
+          <input #fileInput type="file" hidden (change)="onFileSelected($event)">
+          <mat-form-field appearance="outline" class="full-field" style="margin-top:8px" *ngIf="selectedFile">
+            <mat-label>Description</mat-label>
+            <input matInput [(ngModel)]="fileDescription">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="uploadFile()" [disabled]="!selectedFile" style="margin-top:8px;width:100%">
+            <mat-icon>upload</mat-icon> Upload
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card" *ngIf="artifacts.length > 0">
+        <mat-card-header><mat-card-title>Files ({{ artifacts.length }})</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="artifact-item" *ngFor="let a of artifacts">
+            <mat-icon class="file-icon">insert_drive_file</mat-icon>
+            <div class="artifact-info">
+              <span class="artifact-name">{{ a.fileName }}</span>
+              <span class="artifact-meta">{{ a.uploadedBy.name }} · v{{ a.version }}</span>
+            </div>
+            <button mat-icon-button (click)="downloadArtifact(a.id)" matTooltip="Download"><mat-icon>download</mat-icon></button>
+            <button mat-icon-button color="warn" (click)="deleteArtifact(a)" matTooltip="Delete file"><mat-icon>delete</mat-icon></button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card" *ngIf="history.length > 0">
+        <mat-card-header><mat-card-title>History</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="history-item" *ngFor="let h of history">
+            <div class="history-dot"></div>
+            <div>
+              <div class="history-status">
+                <app-status-badge [status]="h.oldStatus"></app-status-badge>
+                <mat-icon style="font-size:14px;width:14px">arrow_forward</mat-icon>
+                <app-status-badge [status]="h.newStatus"></app-status-badge>
+              </div>
+              <div class="history-meta">{{ h.changedBy?.name }} · {{ h.changedAt | date:'short' }}</div>
+              <div class="history-remarks" *ngIf="h.remarks">{{ h.remarks }}</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<ng-template #loader><mat-spinner style="margin:80px auto;display:block"></mat-spinner></ng-template>

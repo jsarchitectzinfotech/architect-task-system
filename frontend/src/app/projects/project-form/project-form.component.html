@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Project' : 'New Project' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="pf-grid">
+    <mat-form-field appearance="outline" class="pf-full">
+      <mat-label>Project Name</mat-label>
+      <input matInput formControlName="name">
+      <mat-error>Project name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="pf-full">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Client Name</mat-label>
+      <input matInput formControlName="clientName">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Project Code</mat-label>
+      <input matInput formControlName="projectCode">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="pf-full">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="loading || form.invalid">
+    {{ isEdit ? 'Save Changes' : 'Create Project' }}
+  </button>
+</mat-dialog-actions>
